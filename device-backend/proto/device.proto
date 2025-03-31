@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package device;
+
+service DeviceService {
+  rpc GetDeviceStatus (DeviceRequest) returns (DeviceResponse);
+  rpc RegisterDevice (RegisterDeviceRequest) returns (RegisterDeviceResponse);
+  rpc AuthenticateDevice (AuthDeviceRequest) returns (AuthDeviceResponse);
+}
+
+message DeviceRequest {
+  string deviceId = 1;
+}
+
+message DeviceResponse {
+  string status = 1;
+}
+
+message RegisterDeviceRequest {
+  string deviceId = 1;
+  string authKey = 2;
+}
+
+message RegisterDeviceResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message AuthDeviceRequest {
+  string deviceId = 1;
+  string authKey = 2;
+}
+
+message AuthDeviceResponse {
+  bool authenticated = 1;
+  string message = 2;
+}
