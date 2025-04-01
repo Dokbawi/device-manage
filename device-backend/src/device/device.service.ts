@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Device } from './device.schema';
+import { UpdateDeviceRequest } from './device.interface';
 
 @Injectable()
 export class DeviceService {
@@ -21,9 +22,27 @@ export class DeviceService {
       return { success: false, message: 'Device already registered' };
     }
 
-    const newDevice = new this.deviceModel({ deviceId, authKey });
+    const newDevice = new this.deviceModel({
+      deviceId,
+      authKey,
+      authDate: new Date(),
+    });
     await newDevice.save();
     return { success: true, message: 'Device registered successfully' };
+  }
+
+  async updateDevice(data: UpdateDeviceRequest) {
+    const result = await this.deviceModel
+      .updateOne(
+        { deviceId: data.deviceId },
+        {
+          version: data.version,
+          temperature: data.temperature,
+        },
+      )
+      .exec();
+
+    return await this.deviceModel.findOne({ deviceId: data.deviceId });
   }
 
   async authenticateDevice(

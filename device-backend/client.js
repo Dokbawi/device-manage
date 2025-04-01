@@ -20,17 +20,15 @@ client.RegisterDevice(
   (error, response) => {
     if (error) console.error(error);
     else console.log('Register Device:', response);
+  },
+);
 
-    // 2. 기기 인증 (인증 필요)
-    client.AuthenticateDevice({}, metadata, (error, response) => {
-      if (error) console.error(error);
-      else console.log('Authenticate Device:', response);
-
-      // 3. 기기 상태 확인 (인증 필요)
-      client.GetDeviceStatus({}, metadata, (error, response) => {
-        if (error) console.error(error);
-        else console.log('Device Status:', response);
-      });
-    });
+// 2. 기기 인증 (인증 필요)
+client.UpdateDevice(
+  { deviceId: 'iot-001', version: 'v3', temperature: '10' },
+  metadata,
+  (error, response) => {
+    if (error) console.error(error);
+    else console.log('UpdateDevice Device:', response);
   },
 );

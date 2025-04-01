@@ -3,16 +3,12 @@ import { GrpcMethod } from '@nestjs/microservices';
 import { DeviceService } from './device.service';
 import { DeviceAuthGuard } from 'src/guard/device-auth.guard';
 import { SkipAuth } from 'src/decorator/skip-auth.decorator';
+import { UpdateDeviceRequest } from './device.interface';
 
 @Controller()
 @UseGuards(DeviceAuthGuard)
 export class DeviceController {
   constructor(private readonly deviceService: DeviceService) {}
-
-  @GrpcMethod('DeviceService', 'GetDeviceStatus')
-  async getDeviceStatus(data: { deviceId: string }) {
-    return this.deviceService.getDeviceStatus(data.deviceId);
-  }
 
   @SkipAuth()
   @GrpcMethod('DeviceService', 'RegisterDevice')
@@ -20,8 +16,8 @@ export class DeviceController {
     return this.deviceService.registerDevice(data.deviceId, data.authKey);
   }
 
-  @GrpcMethod('DeviceService', 'AuthenticateDevice')
-  async authenticateDevice(data: { deviceId: string; authKey: string }) {
-    return this.deviceService.authenticateDevice(data.deviceId, data.authKey);
+  @GrpcMethod('DeviceService', 'UpdateDevice')
+  async updateDevice(data: UpdateDeviceRequest) {
+    return this.deviceService.updateDevice(data);
   }
 }

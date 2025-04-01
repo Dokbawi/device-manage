@@ -3,9 +3,8 @@ syntax = "proto3";
 package device;
 
 service DeviceService {
-  rpc GetDeviceStatus (DeviceRequest) returns (DeviceResponse);
   rpc RegisterDevice (RegisterDeviceRequest) returns (RegisterDeviceResponse);
-  rpc AuthenticateDevice (AuthDeviceRequest) returns (AuthDeviceResponse);
+  rpc UpdateDevice (UpdateDeviceRequest) returns(UpdateDeviceResponse);
 }
 
 message DeviceRequest {
@@ -21,17 +20,22 @@ message RegisterDeviceRequest {
   string authKey = 2;
 }
 
+
 message RegisterDeviceResponse {
   bool success = 1;
   string message = 2;
 }
 
-message AuthDeviceRequest {
+message UpdateDeviceRequest {
   string deviceId = 1;
-  string authKey = 2;
+  string temperature = 2;
+  string version = 3;
 }
 
-message AuthDeviceResponse {
-  bool authenticated = 1;
-  string message = 2;
+message UpdateDeviceResponse {
+  string deviceId = 1;
+  string temperature = 2;
+  string version = 3;
 }
+ 
+ 
