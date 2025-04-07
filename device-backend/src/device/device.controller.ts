@@ -1,9 +1,15 @@
 import { Controller, UseGuards } from '@nestjs/common';
-import { GrpcMethod } from '@nestjs/microservices';
+import {
+  Ctx,
+  GrpcMethod,
+  MessagePattern,
+  Payload,
+  RmqContext,
+} from '@nestjs/microservices';
 import { DeviceService } from './device.service';
 import { DeviceAuthGuard } from 'src/guard/device-auth.guard';
 import { SkipAuth } from 'src/decorator/skip-auth.decorator';
-import { UpdateDeviceRequest } from './device.interface';
+import { DeviceRequest, UpdateDeviceRequest } from './device.interface';
 
 @Controller()
 @UseGuards(DeviceAuthGuard)

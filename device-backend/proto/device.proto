@@ -5,7 +5,9 @@ package device;
 service DeviceService {
   rpc RegisterDevice (RegisterDeviceRequest) returns (RegisterDeviceResponse);
   rpc UpdateDevice (UpdateDeviceRequest) returns(UpdateDeviceResponse);
+  rpc StopDevice (DeviceRequest) returns(DeviceResponse);
 }
+
 
 message DeviceRequest {
   string deviceId = 1;

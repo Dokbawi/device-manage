@@ -1,12 +1,30 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Device } from './device.schema';
 import { UpdateDeviceRequest } from './device.interface';
+import { ClientGrpc } from '@nestjs/microservices';
+import { Observable } from 'rxjs';
+
+interface DeviceGrpcService {
+  StopDevice(data: {
+    deviceId: string;
+  }): Observable<{ success: boolean; message: string }>;
+}
 
 @Injectable()
 export class DeviceService {
-  constructor(@InjectModel(Device.name) private deviceModel: Model<Device>) {}
+  private deviceGrpcService: DeviceGrpcService;
+
+  constructor(
+    @InjectModel(Device.name) private deviceModel: Model<Device>,
+    @Inject('GRPC_SERVICE') private readonly grpcClient: ClientGrpc,
+  ) {}
+
+  onModuleInit() {
+    this.deviceGrpcService =
+      this.grpcClient.getService<DeviceGrpcService>('DeviceService');
+  }
 
   async getDeviceStatus(deviceId: string): Promise<{ status: string }> {
     const device = await this.deviceModel.findOne({ deviceId }).exec();
@@ -54,5 +72,27 @@ export class DeviceService {
       return { authenticated: true, message: 'Authentication successful' };
     }
     return { authenticated: false, message: 'Invalid credentials' };
+  }
+
+  async stopDevice(deviceId: string) {
+    try {
+      const response = this.deviceGrpcService.StopDevice({ deviceId });
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async forceAuthenticate(deviceId: string) {
+    const device = this.deviceModel.updateOne(
+      {
+        deviceId,
+      },
+      {
+        authDate: null,
+        authKey: null,
+      },
+    );
+    return;
   }
 }
